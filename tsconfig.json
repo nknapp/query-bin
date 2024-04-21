@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["es2023", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "moduleResolution": "Node",
+    "module": "ESNext"
+  }
+}

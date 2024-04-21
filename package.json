@@ -1,0 +1,25 @@
+{
+  "name": "query-bin",
+  "version": "0.0.1",
+  "description": "A list with queries like in the 'testing-library'",
+  "main": "index.js",
+  "types": "index.d.s",
+  "type": "module",
+  "module": "index.js",
+  "scripts": {
+    "test": "vitest run && tsc",
+    "format": "prettier -w .",
+    "version": "npm run thought"
+  },
+  "keywords": [
+    "testing-library"
+  ],
+  "author": "Nils Knappmeier",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "20.12.7",
+    "prettier": "3.2.5",
+    "typescript": "5.4.5",
+    "vitest": "1.5.0"
+  }
+}
