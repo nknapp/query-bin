@@ -6,6 +6,10 @@
   "types": "index.d.s",
   "type": "module",
   "module": "index.js",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/nknapp/query-bin"
+  },
   "scripts": {
     "test": "vitest run && tsc",
     "format": "prettier -w .",
