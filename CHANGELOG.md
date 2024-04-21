@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# v0.2.1
+
+Date: 2024-04-21T21:47:25.224Z
+
 - Remove unnecessary dependencies
 
 # v0.2.0
