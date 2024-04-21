@@ -18,7 +18,6 @@ export class QueryBin<T, Q extends QueryDefinitions<T> = QueryDefinitions<T>> {
 }
 
 interface Options {
-  retryDelayMillis?: number;
   timeoutMillis?: number;
 }
 
