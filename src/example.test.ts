@@ -29,9 +29,7 @@ const requests = new QueryBin<Request>({ byMethodAndUrl });
 
 // Let's assume we have a component under test here.
 describe("The Login component", () => {
-
   it("logs in with the correct credentials", async () => {
-
     // Simulate some requests. Those would normally originate from your component
     requests.add({ method: "GET", url: "http://localhost:8080" });
 

@@ -1,4 +1,3 @@
-
 export class QueryBin<T, Q extends QueryDefinitions<T> = QueryDefinitions<T>> {
   constructor(queries: Q);
 
@@ -21,12 +20,10 @@ export type Queries<T> = {
 };
 
 export type QueryDefinition<T> = {
-
   queryAll: (all: T[]) => T[];
   onNoneFound(all: T[]): Error;
   onMultipleFound(all: T[], found: T[]): Error;
 };
-
 
 export type QueryAll<T, Q extends QueryDefinitions<T>> = {
   [Name in keyof Q]: (...args: Parameters<Q[Name]>) => T[];
@@ -51,4 +48,3 @@ export type FindAll<T, Q extends QueryDefinitions<T>> = {
 export type Find<T, Q extends QueryDefinitions<T>> = {
   [Name in keyof Q]: (...args: Parameters<Q[Name]>) => Promise<T>;
 };
-

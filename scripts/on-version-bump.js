@@ -1,14 +1,20 @@
-import fs from 'fs/promises'
-import packageJson from "../package.json" assert { type: 'json' };
+import packageJson from "../package.json" assert { type: "json" };
+import cp from "child_process";
+import { editFile } from "./tools/editFile.js";
 
-const changelog = await fs.readFile("CHANGELOG.md", "utf-8")
+cp.execSync("npm run test");
 
-const updatedChangelog = changelog.replace("# Upcoming\n", `# Upcoming
+await editFile("CHANGELOG.md", (contents) => {
+  return contents.replace(
+    "# Upcoming\n",
+    `# Upcoming
 
 # v${packageJson.version}
 
 Date: ${new Date().toISOString()}
 
-`)
+`,
+  );
+});
 
-await fs.writeFile("CHANGELOG.md",updatedChangelog)
+cp.execSync("node ./scripts/build-readme.js");

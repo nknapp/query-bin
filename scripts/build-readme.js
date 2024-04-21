@@ -1,5 +1,6 @@
 import fs from "fs/promises";
-import packageJson from "../package.json" assert { type: 'json' };
+import packageJson from "../package.json" assert { type: "json" };
+import { editFile } from "./tools/editFile.js";
 
 const exampleTestTs = await fs.readFile("./src/example.test.ts", "utf-8");
 
@@ -7,9 +8,8 @@ function fences(name, contents) {
   return "```" + name + "\n" + contents + "\n```";
 }
 
-await fs.writeFile(
-  "README.md",
-  `
+await editFile("README.md", () => {
+  return `
 # query-bin
 
 ![logo](https://raw.githubusercontent.com/nknapp/query-bin/main/artwork/query-bin.svg)
@@ -60,5 +60,5 @@ Don't afraid to use this project even if the last commit is a long time ago. I t
 If you like to help me maintain and update dependencies, please contact me. At the moment, I tend not to be very active 
 though.
 
-`,
-);
+`;
+});

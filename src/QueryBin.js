@@ -1,4 +1,3 @@
-
 export class QueryBin {
   constructor(queries = {}) {
     this.values = [];
@@ -61,7 +60,6 @@ export class QueryBin {
         });
       };
     });
-
   }
 
   add(value) {
