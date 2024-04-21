@@ -12,8 +12,7 @@
   },
   "scripts": {
     "test": "vitest run && tsc",
-    "format": "prettier -w .",
-    "version": "npm run thought"
+    "format": "prettier -w ."
   },
   "keywords": [
     "testing-library"
