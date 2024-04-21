@@ -1,5 +1,5 @@
 export class QueryBin<T, Q extends QueryDefinitions<T> = QueryDefinitions<T>> {
-  constructor(queries: Q);
+  constructor(queries: Q, options?: Options);
 
   add(value: T): void;
 
@@ -15,14 +15,20 @@ export class QueryBin<T, Q extends QueryDefinitions<T> = QueryDefinitions<T>> {
   find: Find<T, Q>;
 }
 
+interface Options {
+  retryDelayMillis?: number;
+  timeoutMillis?: number;
+}
+
 export type Queries<T> = {
   [name: string]: (...args: any[]) => QueryDefinition<T>;
 };
 
 export type QueryDefinition<T> = {
   queryAll: (all: T[]) => T[];
-  onNoneFound(all: T[]): Error;
-  onMultipleFound(all: T[], found: T[]): Error;
+  serializeForErrorMessage: (item: T) => string;
+  noneFoundMessage: string;
+  multipleFoundMessage: string;
 };
 
 export type QueryAll<T, Q extends QueryDefinitions<T>> = {

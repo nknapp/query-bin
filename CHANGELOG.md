@@ -2,7 +2,10 @@
 
 # Upcoming
 
-- Prepare changelog and publish automation
+## Features
+
+- options to tweak timeouts for "find" and "findAll"
+- simpler error message definition
 
 # v0.0.3
 

@@ -1,9 +1,15 @@
 export class QueryBin {
-  constructor(queries = {}) {
+  constructor(
+    queries = {},
+    { retryDelayMillis = 50, timeoutMillis = 1000 } = {},
+  ) {
     this.values = [];
+    this.retryDelayMillis = retryDelayMillis;
+    this.timeoutMillis = timeoutMillis;
     this.queryAll = mapValues(queries, (factory) => {
       return (...args) => {
-        return factory(...args).queryAll(this.values);
+        const { queryAll } = factory(...args);
+        return queryAll(this.values);
       };
     });
     this.query = mapValues(queries, (factory) => {
@@ -12,7 +18,7 @@ export class QueryBin {
         const results = queryDefinition.queryAll(this.values);
         if (results.length === 0) return null;
         if (results.length > 1)
-          throw queryDefinition.onMultipleFound(this.values, results);
+          throw this.multipleResultsError(queryDefinition, results);
         return results[0];
       };
     });
@@ -20,10 +26,9 @@ export class QueryBin {
       return (...args) => {
         const queryDefinition = factory(...args);
         const results = queryDefinition.queryAll(this.values);
-        if (results.length === 0)
-          throw queryDefinition.onNoneFound(this.values);
+        if (results.length === 0) throw this.noResultsError(queryDefinition);
         if (results.length > 1)
-          throw queryDefinition.onMultipleFound(this.values, results);
+          throw this.multipleResultsError(queryDefinition, results);
         return results[0];
       };
     });
@@ -31,8 +36,7 @@ export class QueryBin {
       return (...args) => {
         const queryDefinition = factory(...args);
         const results = queryDefinition.queryAll(this.values);
-        if (results.length === 0)
-          throw queryDefinition.onNoneFound(this.values);
+        if (results.length === 0) throw this.noResultsError(queryDefinition);
         return results;
       };
     });
@@ -41,8 +45,7 @@ export class QueryBin {
         const queryDefinition = factory(...args);
         return this.waitFor(() => {
           const results = queryDefinition.queryAll(this.values);
-          if (results.length === 0)
-            throw queryDefinition.onNoneFound(this.values);
+          if (results.length === 0) throw this.noResultsError(queryDefinition);
           return results;
         });
       };
@@ -52,10 +55,9 @@ export class QueryBin {
         const queryDefinition = factory(...args);
         return this.waitFor(() => {
           const results = queryDefinition.queryAll(this.values);
-          if (results.length === 0)
-            throw queryDefinition.onNoneFound(this.values);
+          if (results.length === 0) throw this.noResultsError(queryDefinition);
           if (results.length > 1)
-            throw queryDefinition.onMultipleFound(this.values, results);
+            throw this.multipleResultsError(queryDefinition, results);
           return results[0];
         });
       };
@@ -74,16 +76,33 @@ export class QueryBin {
     return this.values;
   }
 
+  multipleResultsError(queryDefinition, results) {
+    return new Error(
+      queryDefinition.multipleFoundMessage +
+        "\nFound: \n" +
+        results.map(queryDefinition.serializeForErrorMessage).join("\n"),
+    );
+  }
+
+  noResultsError(queryDefinition) {
+    const values =
+      this.values.length === 0
+        ? "List is completely empty!"
+        : "All values: \n" +
+          this.values.map(queryDefinition.serializeForErrorMessage).join("\n");
+    return new Error(`${queryDefinition.noneFoundMessage}\n${values}`);
+  }
+
   async waitFor(fn) {
     const started = Date.now();
-    while (Date.now() - started < 1000) {
+    while (Date.now() - started <= this.timeoutMillis) {
       try {
         return await fn();
       } catch (e) {
-        await delay(100);
+        await delay(this.retryDelayMillis);
       }
     }
-    return fn();
+    await fn();
   }
 }
 

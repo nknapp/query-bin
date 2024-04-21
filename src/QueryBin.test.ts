@@ -1,17 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { QueryDefinition, QueryBin } from "./QueryBin";
+import { QueryBin, QueryDefinition } from "./QueryBin";
 
 function dividableBy(modulo: number): QueryDefinition<number> {
   return {
     queryAll: (all: number[]): number[] => all.filter((n) => n % modulo === 0),
-    onMultipleFound: (all, found) =>
-      new Error(
-        `Multiple numbers of ${all} are dividable by ${modulo}: ${found}`,
-      ),
-    onNoneFound: (all) =>
-      new Error(
-        `Could not find any numbers in ${all} that are dividable by ${modulo}`,
-      ),
+    serializeForErrorMessage: (item) => String(item),
+    noneFoundMessage: `No number is dividable by ${modulo}.`,
+    multipleFoundMessage: `Multiple numbers are dividable by ${modulo}.`,
   };
 }
 
@@ -52,7 +47,11 @@ describe("QueryBin", () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(() => bin.query.dividableBy(3)).toThrow(
-      "Multiple numbers of 1,2,3,4,5,6,7,8,9,10 are dividable by 3: 3,6,9",
+      "Multiple numbers are dividable by 3.\n" +
+        "Found: \n" +
+        "3\n" +
+        "6\n" +
+        "9",
     );
   });
 
@@ -72,7 +71,11 @@ describe("QueryBin", () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(() => bin.get.dividableBy(3)).toThrow(
-      "Multiple numbers of 1,2,3,4,5,6,7,8,9,10 are dividable by 3: 3,6,9",
+      "Multiple numbers are dividable by 3.\n" +
+        "Found: \n" +
+        "3\n" +
+        "6\n" +
+        "9",
     );
   });
 
@@ -80,7 +83,25 @@ describe("QueryBin", () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(() => bin.get.dividableBy(25)).toThrow(
-      "Could not find any numbers in 1,2,3,4,5,6,7,8,9,10 that are dividable by 25",
+      "No number is dividable by 25.\n" +
+        "All values: \n" +
+        "1\n" +
+        "2\n" +
+        "3\n" +
+        "4\n" +
+        "5\n" +
+        "6\n" +
+        "7\n" +
+        "8\n" +
+        "9\n" +
+        "10",
+    );
+  });
+
+  it("'get' shows special message if there are no values at all", () => {
+    const bin = new QueryBin({ dividableBy });
+    expect(() => bin.get.dividableBy(25)).toThrow(
+      "No number is dividable by 25.\nList is completely empty!",
     );
   });
 
@@ -100,7 +121,18 @@ describe("QueryBin", () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(() => bin.getAll.dividableBy(25)).toThrow(
-      "Could not find any numbers in 1,2,3,4,5,6,7,8,9,10 that are dividable by 25",
+      "No number is dividable by 25.\n" +
+        "All values: \n" +
+        "1\n" +
+        "2\n" +
+        "3\n" +
+        "4\n" +
+        "5\n" +
+        "6\n" +
+        "7\n" +
+        "8\n" +
+        "9\n" +
+        "10",
     );
   });
 
@@ -117,10 +149,10 @@ describe("QueryBin", () => {
   });
 
   it("'findAll' throws an error if no results match", async () => {
-    const bin = new QueryBin({ dividableBy });
-    bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    await expect(bin.findAll.dividableBy(25)).rejects.toThrow(
-      "Could not find any numbers in 1,2,3,4,5,6,7,8,9,10 that are dividable by 25",
+    const bin = new QueryBin({ dividableBy }, { timeoutMillis: 100 });
+    bin.addAll([1, 2]);
+    await expect(bin.findAll.dividableBy(3)).rejects.toThrow(
+      "No number is dividable by 3.\nAll values: \n1\n2",
     );
   });
 
@@ -138,18 +170,22 @@ describe("QueryBin", () => {
   });
 
   it("'find' throws an error on multiple results", async () => {
-    const bin = new QueryBin({ dividableBy });
+    const bin = new QueryBin({ dividableBy }, { timeoutMillis: 100 });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     await expect(bin.find.dividableBy(3)).rejects.toThrow(
-      "Multiple numbers of 1,2,3,4,5,6,7,8,9,10 are dividable by 3: 3,6,9",
+      "Multiple numbers are dividable by 3.\n" +
+        "Found: \n" +
+        "3\n" +
+        "6\n" +
+        "9",
     );
   });
 
   it("'find' throws an error if no results match", async () => {
-    const bin = new QueryBin({ dividableBy });
-    bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    await expect(bin.findAll.dividableBy(25)).rejects.toThrow(
-      "Could not find any numbers in 1,2,3,4,5,6,7,8,9,10 that are dividable by 25",
+    const bin = new QueryBin({ dividableBy }, { timeoutMillis: 100 });
+    bin.addAll([1, 2]);
+    await expect(bin.findAll.dividableBy(3)).rejects.toThrow(
+      "No number is dividable by 3.\nAll values: \n1\n2",
     );
   });
 
@@ -161,8 +197,37 @@ describe("QueryBin", () => {
 
   it("'find' return multiple results if they come in later", async () => {
     const bin = new QueryBin({ dividableBy });
-    const result = bin.find.dividableBy(7);
-    bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    expect(await result).toEqual(7);
+    setTimeout(() => {
+      bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    }, 100);
+    expect(await bin.find.dividableBy(7)).toEqual(7);
+  });
+
+  it("'find' only waits 'timeoutMillis' milliseconds for items to appear", async () => {
+    const bin = new QueryBin({ dividableBy }, { timeoutMillis: 200 });
+    setTimeout(() => {
+      bin.addAll([1, 2, 3]);
+    }, 1000);
+    await expect(bin.find.dividableBy(3)).rejects.toThrow(
+      "No number is dividable by 3.\nList is completely empty!",
+    );
+  });
+
+  it("'find' waits about 1000 milliseconds by default", async () => {
+    const bin = new QueryBin({ dividableBy });
+    setTimeout(() => {
+      bin.addAll([1, 2, 3]);
+    }, 900);
+    expect(await bin.find.dividableBy(3)).toEqual(3);
+  });
+
+  it("'find' does not wait much longer than about 1000 milliseconds by default", async () => {
+    const bin = new QueryBin({ dividableBy });
+    setTimeout(() => {
+      bin.addAll([1, 2, 3]);
+    }, 1100);
+    await expect(bin.find.dividableBy(3)).rejects.toThrow(
+      "No number is dividable by 3.\nList is completely empty!",
+    );
   });
 });
