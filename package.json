@@ -23,7 +23,7 @@
     "test": "vitest run && tsc",
     "format": "prettier -w .",
     "version": "node ./scripts/on-version-bump.js",
-    "postinstall": "./scripts/on-postinstall.sh",
+    "prepare": "./scripts/on-postinstall.sh",
     "postversion": "git push origin main --tags && npm publish"
   },
   "keywords": [

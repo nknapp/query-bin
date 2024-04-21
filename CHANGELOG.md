@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# Chores
+
+- Fix setup by moving git hook initialization to "prepare" script
+
 # v0.1.1
 
 Date: 2024-04-21T18:25:52.094Z
