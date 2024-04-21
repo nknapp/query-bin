@@ -6,6 +6,10 @@
 
 Date: 2024-04-21T18:25:52.094Z
 
+## Chores
+
+- Add version automation again
+
 # v0.1.0
 
 Date: 2024-04-21T18:23:06.036Z
