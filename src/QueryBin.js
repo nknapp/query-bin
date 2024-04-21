@@ -1,11 +1,14 @@
 export class QueryBin {
   constructor(
     queries = {},
-    { retryDelayMillis = 50, timeoutMillis = 1000 } = {},
+    { retryDelayMillis = 200, timeoutMillis = 1000 } = {},
   ) {
     this.values = [];
     this.retryDelayMillis = retryDelayMillis;
     this.timeoutMillis = timeoutMillis;
+
+    this.latch = new Latch();
+
     this.queryAll = mapValues(queries, (factory) => {
       return (...args) => {
         const { queryAll } = factory(...args);
@@ -66,10 +69,12 @@ export class QueryBin {
 
   add(value) {
     this.values.push(value);
+    this.latch.next();
   }
 
   addAll(values) {
     this.values.push(...values);
+    this.latch.next();
   }
 
   all() {
@@ -99,7 +104,8 @@ export class QueryBin {
       try {
         return await fn();
       } catch (e) {
-        await delay(this.retryDelayMillis);
+        const remaining = this.timeoutMillis - (Date.now() - started);
+        await Promise.race([delay(remaining), this.latch.promise]);
       }
     }
     await fn();
@@ -116,4 +122,32 @@ function mapValues(object, mapper) {
 
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+class Latch {
+  constructor() {
+    this.promise = new Promise((resolve) => {
+      this.open = resolve;
+    });
+  }
+
+  next() {
+    this.open();
+    this.promise = new Promise((resolve) => {
+      this.open = resolve;
+    });
+  }
+}
+
+function promiseWithResolvers() {
+  let resolve;
+  let reject;
+  const promise = new Promise((_resolve, _reject) => {
+    (resolve = _resolve), (reject = _reject);
+  });
+  return {
+    promise,
+    resolve,
+    reject,
+  };
 }

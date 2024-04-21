@@ -142,7 +142,7 @@ describe("QueryBin", () => {
     expect(bin.getAll.dividableBy(7)).toEqual([7]);
   });
 
-  it("'findAll' return multiple results", async () => {
+  it("'fin  dAll' return multiple results", async () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     expect(await bin.findAll.dividableBy(3)).toEqual([3, 6, 9]);
