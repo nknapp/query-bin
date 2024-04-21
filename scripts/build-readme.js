@@ -18,23 +18,22 @@ await editFile("README.md", () => {
 
 <sub>This README is generated via [./scripts/build-readme.js](./scripts/build-readme.js)</sub>
 
-## Motivation
+## Introduction
 
-I like the [testing-library](https://testing-library.com/) because of its [queries](https://testing-library.com/docs/queries/about#types-of-queries),
-but sadly you can only apply those queries to the DOM when you are testing.
+I like the [testing-library](https://testing-library.com/), and one reason for that is its [queries](https://testing-library.com/docs/queries/about#types-of-queries),
+you have different queries like \`byText\` and \`byRole\`, each of which comes in variations like 
 
-What I really miss was using them for other use-cases.
+* \`query\` and \`queryAll\` when finding a result is optional 
+* \`get\`, \`getAll\` when finding a result is mandatory
+* \`find\` and \`findAll\` when you want to wait for the result to be there
 
-This project is an abstraction for those queries. It's a simple list of objects, but you can queries, each of which contains a
+You can add custom queries but just providing a \`queryAll\` function and some error messages, but sadly everything is set around the DOM and querying HTML elements.
+I always wanted to have those queries for other use-cases, such as querying requests captured by [mock-service-worker](https://mswjs.io/).
 
-* a \`queryAll\` function which returns matching objects from the list.
-* a \`onNoneFound\` function that creates an error method for the case that a result was expected, but not found.
-* a \`onMultipleFound\` function that creates an error method for the case that a only one result was expected, but multiple were found.
+This project builds an abstraction, so that you get those queries on lists of arbitrary objects. You provide the implementation for \`queryAll\` and 
+the rest will be built for you.
 
-What you get out are the variants \`query\`, \`queryAll\`, \`get\`, \`getAll\`, \`find\` and \`findAll\`. The expect
-optional or required results, single or multiple, now or in the future.
-
-Hve a look at https://testing-library.com/docs/queries/about#types-of-queries for details.
+This project is not a finished test-utility for a given use case, but a basis so that you can build queries,  for example around \`mock-service-worker\`.
 
 ## Installation
 
@@ -53,9 +52,12 @@ This project is licensed under the [MIT License](./LICENSE)
 
 ## Maintainance-free
 
-Don't afraid to use this project even if the last commit is a long time ago. I tried to make it as "maintenance-free" as possible.
+I want to be honest. I am not good at maintaining OS projects these days. I have my turn with Handlebars.js, but now there is just to much going on in my life.
+That is why I tried to make this project as "maintenance-free" as possible.
 
-* There are no depencendies except for development, and I tried to keep them at a minimum.
+That said: If you find this package in 2026 or so and you tell yourself: "This is a dead project". Think about how much maintenance is  really required for it:
+
+* There are no dependendies except for development, and I tried to keep them at a minimum.
 * The library is small and has a clear scope. There might be some features missing, but I think of it as almost complete.
 * I don't see any way this library may impact security.
 
