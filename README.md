@@ -34,7 +34,7 @@ The [tests](./src/QueryBin.test.ts) give a broad overview over the functionality
 example.
 
 ```typescript
-import { QueryBin, QueryDefinition } from "..";
+import { QueryBin, QueryDefinition } from "query-bin";
 import { describe, expect, it } from "vitest";
 
 type Method = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
@@ -49,14 +49,9 @@ function byMethodAndUrl(method: Method, url: string): QueryDefinition<Request> {
   return {
     queryAll: (items) =>
       items.filter((item) => item.method === method && item.url.includes(url)),
-    onNoneFound: (all) =>
-      new Error(
-        `Could not find item with method ${method} and URL containing ${url}. All requests:\n\n${JSON.stringify(all, null, 2)}`,
-      ),
-    onMultipleFound: (all, found) =>
-      new Error(
-        `Multiple items found method ${method} and URL containing ${url}. Found:\n\n${JSON.stringify(found, null, 2)}`,
-      ),
+    serializeForErrorMessage: (item) => JSON.stringify(item, null, 2),
+    noneFoundMessage: `Could not find requests with method ${method} and URL containing ${url}.`,
+    multipleFoundMessage: `Multiple requests found method ${method} and URL containing ${url}.`,
   };
 }
 
@@ -99,3 +94,10 @@ Don't afraid to use this project even if the last commit is a long time ago. I t
 
 If you like to help me maintain and update dependencies, please contact me. At the moment, I tend not to be very active
 though.
+
+## Funding :coffee:
+
+You can support me at
+
+- [Liberapay](https://de.liberapay.com/nils.knappmeier/)
+- [Paypal](https://www.paypal.com/donate/?hosted_button_id=GB656ZSAEQEXN)
