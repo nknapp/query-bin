@@ -1,12 +1,8 @@
 "use strict";
 
 class QueryBin {
-  constructor(
-    queries = {},
-    { retryDelayMillis = 200, timeoutMillis = 1000 } = {},
-  ) {
+  constructor(queries = {}, { timeoutMillis = 1000 } = {}) {
     this.values = [];
-    this.retryDelayMillis = retryDelayMillis;
     this.timeoutMillis = timeoutMillis;
 
     this.latch = new Latch();
