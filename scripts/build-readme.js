@@ -2,7 +2,9 @@ import fs from "fs/promises";
 import packageJson from "../package.json" assert { type: "json" };
 import { editFile } from "./tools/editFile.js";
 
-const exampleTestTs = (await fs.readFile("./src/example.test.ts", "utf-8")).replace(`".."`,`"${packageJson.name}"`);
+const exampleTestTs = (
+  await fs.readFile("./src/example.test.ts", "utf-8")
+).replace(`".."`, `"${packageJson.name}"`);
 
 function fences(name, contents) {
   return "```" + name + "\n" + contents + "\n```";
