@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# v0.3.0
+
+Date: 2024-04-21T22:11:04.415Z
+
 - Performance: Better handling of wait timeouts. Instead of waiting in intervals of 50ms, we check the result whenever new results are
   added to the bin.
 - Feature: "clear" method to remove all objects
