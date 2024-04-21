@@ -22,7 +22,7 @@
   "scripts": {
     "test": "vitest run && tsc",
     "format": "prettier -w .",
-    "version": "node bin/on-version-bump.js",
+    "version": "node ./scripts/on-version-bump.js",
     "postversion": "npm publish",
     "postinstall": "./scripts/on-postinstall.sh"
   },
