@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# v0.2.0
+
+Date: 2024-04-21T21:43:36.901Z
+
 - Build common-js version
 
 # v0.1.3
