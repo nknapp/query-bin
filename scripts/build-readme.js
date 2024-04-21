@@ -12,7 +12,7 @@ await fs.writeFile(
   `
 # query-bin
 
-![logo](./artwork/query-bin.svg)
+![logo](https://raw.githubusercontent.com/nknapp/query-bin/main/artwork/query-bin.svg)
 
 <sub>This README is generated via [./scripts/build-readme.js](./scripts/build-readme.js)</sub>
 
