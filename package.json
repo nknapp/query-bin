@@ -1,6 +1,6 @@
 {
   "name": "query-bin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A list with queries like in the 'testing-library'",
   "main": "index.js",
   "types": "index.d.s",
