@@ -5,6 +5,8 @@ export class QueryBin<T, Q extends QueryDefinitions<T> = QueryDefinitions<T>> {
 
   addAll(values: T[]): void;
 
+  clear(): void;
+
   all(): T[];
 
   queryAll: QueryAll<T, Q>;

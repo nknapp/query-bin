@@ -31,6 +31,14 @@ describe("QueryBin", () => {
     expect(numbers.all()).toEqual([1, 2, 3, 1, 2]);
   });
 
+  it("can clear all values", () => {
+    const numbers = new QueryBin({});
+    numbers.addAll([1, 2, 3]);
+    expect(numbers.all()).toEqual([1, 2, 3]);
+    numbers.clear();
+    expect(numbers.all()).toEqual([]);
+  });
+
   it("queryAll returns all results matching a query", () => {
     const bin = new QueryBin({ dividableBy });
     bin.addAll([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);

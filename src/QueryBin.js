@@ -77,6 +77,10 @@ export class QueryBin {
     this.latch.next();
   }
 
+  clear() {
+    this.values = [];
+  }
+
   all() {
     return this.values;
   }
