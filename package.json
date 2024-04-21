@@ -9,6 +9,16 @@
     "type": "github",
     "url": "https://github.com/nknapp/query-bin"
   },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://www.paypal.com/donate/?hosted_button_id=GB656ZSAEQEXN"
+    },
+    {
+      "type": "liberapay",
+      "url": "https://de.liberapay.com/nils.knappmeier/"
+    }
+  ],
   "scripts": {
     "test": "vitest run && tsc",
     "format": "prettier -w .",

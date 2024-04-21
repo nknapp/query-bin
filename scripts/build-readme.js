@@ -60,5 +60,12 @@ Don't afraid to use this project even if the last commit is a long time ago. I t
 If you like to help me maintain and update dependencies, please contact me. At the moment, I tend not to be very active 
 though.
 
+## Funding :coffee:
+
+You can support me at 
+
+* [Liberapay](https://de.liberapay.com/nils.knappmeier/)
+* [Paypal](https://www.paypal.com/donate/?hosted_button_id=GB656ZSAEQEXN)
+
 `;
 });
