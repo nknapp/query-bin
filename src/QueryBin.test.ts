@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { QueryBin, QueryDefinition } from "./QueryBin";
+import { createThreadsRpcOptions } from "vitest/workers";
 
 function dividableBy(modulo: number): QueryDefinition<number> {
   return {
@@ -238,4 +239,44 @@ describe("QueryBin", () => {
       "No number is dividable by 3.\nList is completely empty!",
     );
   });
+
+  describe("custom serializer", () => {
+    function createBinWithIds() {
+      return new QueryBin({
+        byIdPrefix(expected: string): QueryDefinition<{ id: string }> {
+          return {
+            test: (item) => item.id.startsWith(expected),
+            multipleFoundMessage: "Multiple found.",
+            noneFoundMessage: "None found.",
+          };
+        },
+      });
+    }
+
+    it("uses default serialize in 'none found'", () => {
+      const bin = createBinWithIds();
+      bin.addAll([{ id: "a" }, { id: "b" }]);
+
+      expect(() => {
+        bin.get.byIdPrefix("c");
+      }).toThrow(
+        `None found.\nAll values: \n${json({ id: "a" })}\n${json({ id: "b" })}`,
+      );
+    });
+
+    it("uses serializer in 'multiple found'", () => {
+      const bin = createBinWithIds();
+      bin.addAll([{ id: "ab" }, { id: "ac" }]);
+
+      expect(() => {
+        bin.get.byIdPrefix("a");
+      }).toThrow(
+        `Multiple found.\nFound: \n${json({ id: "ab" })}\n${json({ id: "ac" })}`,
+      );
+    });
+  });
 });
+
+function json(obj: unknown) {
+  return JSON.stringify(obj, null, 2);
+}

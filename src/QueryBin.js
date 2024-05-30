@@ -1,6 +1,7 @@
 export class QueryBin {
   constructor(queries = {}, { timeoutMillis = 1000 } = {}) {
     this.values = [];
+    this.defaultSerializer = (item) => JSON.stringify(item, null, 2);
     this.timeoutMillis = timeoutMillis;
 
     this.latch = new Latch();
@@ -88,7 +89,11 @@ export class QueryBin {
     return new Error(
       queryDefinition.multipleFoundMessage +
         "\nFound: \n" +
-        results.map(queryDefinition.serializeForErrorMessage).join("\n"),
+        results
+          .map(
+            queryDefinition.serializeForErrorMessage ?? this.defaultSerializer,
+          )
+          .join("\n"),
     );
   }
 
@@ -97,7 +102,12 @@ export class QueryBin {
       this.values.length === 0
         ? "List is completely empty!"
         : "All values: \n" +
-          this.values.map(queryDefinition.serializeForErrorMessage).join("\n");
+          this.values
+            .map(
+              queryDefinition.serializeForErrorMessage ??
+                this.defaultSerializer,
+            )
+            .join("\n");
     return new Error(`${queryDefinition.noneFoundMessage}\n${values}`);
   }
 

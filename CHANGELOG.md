@@ -11,6 +11,7 @@
 Date: 2024-04-21T22:14:24.556Z
 
 - Breaking: Remove unused option "retryDelayMillis"
+- Feature: Make "serializeForErrorMessage" optional. Default is `JSON.stringify` with 2 indent.
 
 # v0.3.0
 

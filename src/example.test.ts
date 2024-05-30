@@ -12,9 +12,10 @@ interface Request {
 function byMethodAndUrl(method: Method, url: string): QueryDefinition<Request> {
   return {
     test: (item) => item.method === method && item.url.includes(url),
-    serializeForErrorMessage: (item) => JSON.stringify(item, null, 2),
     noneFoundMessage: `Could not find requests with method ${method} and URL containing ${url}.`,
     multipleFoundMessage: `Multiple requests found method ${method} and URL containing ${url}.`,
+    // optional
+    serializeForErrorMessage: (item) => JSON.stringify(item, null, 2),
   };
 }
 
