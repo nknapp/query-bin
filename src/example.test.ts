@@ -1,4 +1,4 @@
-import { QueryBin, QueryDefinition } from "..";
+import { Queries, QueryBin } from "..";
 import { describe, expect, it } from "vitest";
 
 type Method = "GET" | "PUT" | "POST" | "PATCH" | "DELETE";
@@ -9,18 +9,20 @@ interface Request {
   body?: Record<string, unknown>;
 }
 
-function byMethodAndUrl(method: Method, url: string): QueryDefinition<Request> {
-  return {
-    test: (item) => item.method === method && item.url.includes(url),
-    noneFoundMessage: `Could not find requests with method ${method} and URL containing ${url}.`,
-    multipleFoundMessage: `Multiple requests found method ${method} and URL containing ${url}.`,
-    // optional
-    serializeForErrorMessage: (item) => JSON.stringify(item, null, 2),
-  };
-}
+const queries = {
+  byMethodAndUrl: function (method: Method, url: string) {
+    return {
+      test: (item) => item.method === method && item.url.includes(url),
+      noneFoundMessage: `Could not find requests with method ${method} and URL containing ${url}.`,
+      multipleFoundMessage: `Multiple requests found method ${method} and URL containing ${url}.`,
+      // optional
+      serializeForErrorMessage: (item) => JSON.stringify(item, null, 2),
+    };
+  },
+  // This typing should be improved. Consider this interface unstable...
+} as const satisfies Queries<Request>;
 
-// This might be something
-const requests = new QueryBin<Request>({ byMethodAndUrl });
+const requests = new QueryBin<Request, typeof queries>(queries);
 
 // Let's assume we have a component under test here.
 describe("The Login component", () => {

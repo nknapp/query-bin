@@ -1,1 +1,1 @@
-export { QueryDefinition, QueryBin } from "./src/QueryBin";
+export { QueryDefinition, QueryBin, Queries } from "./src/QueryBin";
