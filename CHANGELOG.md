@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# v0.6.0
+
+Date: 2024-05-30T13:40:22.393Z
+
 - Expose `Queries` type
 
 # v0.5.0
