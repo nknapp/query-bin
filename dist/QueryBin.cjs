@@ -7,16 +7,19 @@ class QueryBin {
 
     this.latch = new Latch();
 
+    const queryAll = (queryDefinition) => {
+      return this.values.filter(queryDefinition.test);
+    };
+
     this.queryAll = mapValues(queries, (factory) => {
       return (...args) => {
-        const { queryAll } = factory(...args);
-        return queryAll(this.values);
+        return queryAll(factory(...args));
       };
     });
     this.query = mapValues(queries, (factory) => {
       return (...args) => {
         const queryDefinition = factory(...args);
-        const results = queryDefinition.queryAll(this.values);
+        const results = queryAll(queryDefinition);
         if (results.length === 0) return null;
         if (results.length > 1)
           throw this.multipleResultsError(queryDefinition, results);
@@ -26,7 +29,7 @@ class QueryBin {
     this.get = mapValues(queries, (factory) => {
       return (...args) => {
         const queryDefinition = factory(...args);
-        const results = queryDefinition.queryAll(this.values);
+        const results = queryAll(queryDefinition);
         if (results.length === 0) throw this.noResultsError(queryDefinition);
         if (results.length > 1)
           throw this.multipleResultsError(queryDefinition, results);
@@ -36,7 +39,7 @@ class QueryBin {
     this.getAll = mapValues(queries, (factory) => {
       return (...args) => {
         const queryDefinition = factory(...args);
-        const results = queryDefinition.queryAll(this.values);
+        const results = queryAll(queryDefinition);
         if (results.length === 0) throw this.noResultsError(queryDefinition);
         return results;
       };
@@ -45,7 +48,7 @@ class QueryBin {
       return async (...args) => {
         const queryDefinition = factory(...args);
         return this.waitFor(() => {
-          const results = queryDefinition.queryAll(this.values);
+          const results = queryAll(queryDefinition);
           if (results.length === 0) throw this.noResultsError(queryDefinition);
           return results;
         });
@@ -55,7 +58,7 @@ class QueryBin {
       return async (...args) => {
         const queryDefinition = factory(...args);
         return this.waitFor(() => {
-          const results = queryDefinition.queryAll(this.values);
+          const results = queryAll(queryDefinition);
           if (results.length === 0) throw this.noResultsError(queryDefinition);
           if (results.length > 1)
             throw this.multipleResultsError(queryDefinition, results);

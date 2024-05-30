@@ -3,7 +3,7 @@ import { QueryBin, QueryDefinition } from "./QueryBin";
 
 function dividableBy(modulo: number): QueryDefinition<number> {
   return {
-    queryAll: (all: number[]): number[] => all.filter((n) => n % modulo === 0),
+    test: (n) => n % modulo === 0,
     serializeForErrorMessage: (item) => String(item),
     noneFoundMessage: `No number is dividable by ${modulo}.`,
     multipleFoundMessage: `Multiple numbers are dividable by ${modulo}.`,

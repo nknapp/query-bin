@@ -21,8 +21,10 @@
     }
   ],
   "scripts": {
+    "dev": "vitest --ui",
     "test": "vitest run && tsc",
     "format": "prettier -w .",
+    "build": "./scripts/build-cjs.sh",
     "version": "node ./scripts/on-version-bump.js",
     "prepare": "./scripts/on-postinstall.sh",
     "postversion": "git push origin main --tags && npm publish"
