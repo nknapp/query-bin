@@ -2,6 +2,10 @@
 
 # Upcoming
 
+# v0.5.0
+
+Date: 2024-05-30T13:15:37.382Z
+
 - Breaking: New Method for defining queries
   - queryAll function is replaced by a "test" function
     which takes a single item and returns a boolean
